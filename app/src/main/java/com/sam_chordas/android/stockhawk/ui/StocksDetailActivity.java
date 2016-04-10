@@ -7,14 +7,17 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.model.Quote;
 import com.sam_chordas.android.stockhawk.model.Results;
 import com.sam_chordas.android.stockhawk.model.StockHistory;
 import com.sam_chordas.android.stockhawk.service.StockHistoryService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -36,9 +39,9 @@ public class StocksDetailActivity extends AppCompatActivity {
         super.onResume();
         String symbol = getIntent().getStringExtra("symbol");
         getSupportActionBar().setTitle(symbol);
-        String startDate = "2015-10-10";
-        String endDate = "2016-04-10";
-        String yqlQuery = "select * from yahoo.finance.historicaldata where symbol = \"" + symbol + "\" and startDate = \"" + startDate + "\" and endDate = \"" + endDate + "\"";
+        String startDate = formatDate(System.currentTimeMillis());
+        String endDate = getLastSixMonthDate(new Date());
+        String yqlQuery = "select * from yahoo.finance.historicaldata where symbol = \"" + symbol + "\" and startDate = \"" + endDate + "\" and endDate = \"" + startDate + "\"";
         String format = "json";
         String diagnostic = "true";
         String env = "http://datatables.org/alltables.env";
@@ -75,9 +78,7 @@ public class StocksDetailActivity extends AppCompatActivity {
 
                 LineData data = new LineData(labels, dataset);
                 lineChart.setData(data); // set the data and list of lables into chart
-                dataset.setDrawCubic(true);
                 dataset.setDrawFilled(true);
-                dataset.setColors(ColorTemplate.COLORFUL_COLORS);
                 lineChart.setDescription("Stock History");  // set the description
                 lineChart.invalidate();
             }
@@ -87,5 +88,18 @@ public class StocksDetailActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private static String formatDate(long timeInMillis ) {
+        Locale locale = new Locale("en", "US");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",locale);
+        return dateFormat.format(timeInMillis);
+    }
+
+    public static String getLastSixMonthDate(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MONTH, -6);
+        return formatDate(cal.getTimeInMillis());
     }
 }
