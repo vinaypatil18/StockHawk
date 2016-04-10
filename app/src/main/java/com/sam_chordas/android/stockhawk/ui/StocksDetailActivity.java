@@ -13,6 +13,7 @@ import com.sam_chordas.android.stockhawk.model.Results;
 import com.sam_chordas.android.stockhawk.model.StockHistory;
 import com.sam_chordas.android.stockhawk.service.StockHistoryService;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -96,10 +97,20 @@ public class StocksDetailActivity extends AppCompatActivity {
         return dateFormat.format(timeInMillis);
     }
 
-    public static String getLastSixMonthDate(Date date) {
+    private static String getLastSixMonthDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.MONTH, -6);
         return formatDate(cal.getTimeInMillis());
+    }
+
+    private String getMonthForInt(int num) {
+        String month = "wrong";
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (num >= 0 && num <= 11 ) {
+            month = months[num];
+        }
+        return month;
     }
 }
