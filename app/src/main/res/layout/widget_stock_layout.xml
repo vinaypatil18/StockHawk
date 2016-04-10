@@ -33,7 +33,8 @@
             android:layout_height="match_parent"
             android:divider="@null"
             android:dividerHeight="0dp"
-            tools:listitem="@layout/widget_stock_list_item" />
+            tools:listitem="@layout/widget_stock_list_item"
+            android:contentDescription="@string/load_graph"/>
 
         <TextView
             android:id="@+id/widget_empty"
